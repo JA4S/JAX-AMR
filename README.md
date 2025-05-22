@@ -15,6 +15,8 @@ The multi-layer blocks and the partitioning and refinement strategies in JAX-AMR
 
 For the detailed implementation strategies of JAX-AMR, please refer to our [paper](https://doi.org/10.48550/arXiv.2504.13750).
 
+Note: The last block of each layer in JAX-AMR is marked as a NAN block, with all values in its data and info set to NAN. This is to mark the values of ghost grids without neighbor block as invalid values NAN. Therefore, it is important to note that if the solver involves computing global extrema, averages, or similar operations, the influence of NAN values needs to be removed. For instance, the function jnp.nanmax should be used instead of jnp.max.
+
 ## Quick Installation
 JAX-AMR modules can be easily installed using pip install git:
 ```
