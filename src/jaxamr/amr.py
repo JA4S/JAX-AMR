@@ -14,6 +14,7 @@ refinement_tolerance=None
 template_node_num=None
 grid_mask_buffer_kernel=None
 parallel = 'off'
+num_devices = len(jax.devices())
 
 def set_amr(amr_config):
     global Lx, Ly, n_block, n_grid, refinement_tolerance, template_node_num, grid_mask_buffer_kernel,parallel
@@ -25,7 +26,7 @@ def set_amr(amr_config):
     Ny = amr_config['base_grid']['Ny']
     Lx = amr_config['base_grid']['Lx']
     Ly = amr_config['base_grid']['Ly']
-    n_grid = [[Nx // n_block[0][0], Ny // n_block[0][1]]]
+    n_grid = [[(Nx // num_devices) // n_block[0][0], Ny // n_block[0][1]]]
     dx = [Lx/Nx]
     dy = [Ly/Ny]
     for i, (bx, by) in enumerate(n_block[1:], 1):
