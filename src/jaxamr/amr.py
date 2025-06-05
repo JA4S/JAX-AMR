@@ -420,7 +420,8 @@ def update_max_block_number(ref_blk_mask, max_blk_num):
 blk_info_pmap_axis = {'number': 0,
                       'index': 0,
                       'glob_index': 0,
-                      'neighbor_index': 0}
+                      'neighbor_index': 0
+                     }
 
 @partial(pmap,static_broadcasted_argnums=0,in_axes=(None,0,blk_info_pmap_axis, None,None,None)
 def parallel_initialize(level, blk_data, blk_info, criterion, dx, dy):
