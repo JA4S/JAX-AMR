@@ -115,30 +115,30 @@ def get_refinement_block_mask(level, ref_grid_mask):
 def get_refinement_block_info(blk_info, ref_blk_mask, max_blk_num):
 
     mask = ref_blk_mask != 0
-    #flat_mask = mask.ravel() 
-    #flat_indices = jnp.cumsum(flat_mask) * flat_mask
-    #indices_matrix = flat_indices.reshape(ref_blk_mask.shape)
+    flat_mask = mask.ravel() 
+    flat_indices = jnp.cumsum(flat_mask) * flat_mask
+    indices_matrix = flat_indices.reshape(ref_blk_mask.shape)
 
-    #indices_matrix = get_ghost_mask(blk_info, indices_matrix)
+    indices_matrix = get_ghost_mask(blk_info, indices_matrix)
 
-    #up = jnp.pad(indices_matrix, ((0, 0), (1, 0), (0, 0)), mode="constant")[:, 1:-2, 1:-1] 
-    #down = jnp.pad(indices_matrix, ((0, 0), (0, 1), (0, 0)), mode="constant")[:, 2:-1, 1:-1]
-    #left = jnp.pad(indices_matrix, ((0, 0), (0, 0), (1, 0)), mode="constant")[:, 1:-1, 1:-2]
-    #right = jnp.pad(indices_matrix, ((0, 0), (0, 0), (0, 1)), mode="constant")[:, 1:-1, 2:-1]
+    up = jnp.pad(indices_matrix, ((0, 0), (1, 0), (0, 0)), mode="constant")[:, 1:-2, 1:-1] 
+    down = jnp.pad(indices_matrix, ((0, 0), (0, 1), (0, 0)), mode="constant")[:, 2:-1, 1:-1]
+    left = jnp.pad(indices_matrix, ((0, 0), (0, 0), (1, 0)), mode="constant")[:, 1:-1, 1:-2]
+    right = jnp.pad(indices_matrix, ((0, 0), (0, 0), (0, 1)), mode="constant")[:, 1:-1, 2:-1]
 
-    #blks, rows, cols = jnp.nonzero(mask, size = max_blk_num, fill_value = -1)
+    blks, rows, cols = jnp.nonzero(mask, size = max_blk_num, fill_value = -1)
 
-    #up_vals = up[blks, rows, cols] - 1
-    #down_vals = down[blks, rows, cols] - 1
-    #left_vals = left[blks, rows, cols] - 1
-    #right_vals = right[blks, rows, cols] - 1
+    up_vals = up[blks, rows, cols] - 1
+    down_vals = down[blks, rows, cols] - 1
+    left_vals = left[blks, rows, cols] - 1
+    right_vals = right[blks, rows, cols] - 1
 
-    #ref_glob_blk_index = jnp.column_stack([blk_info['glob_index'][blks], rows, cols])
-    #ref_blk_index = jnp.column_stack([blks, rows, cols])
-    #ref_blk_number = jnp.sum(jnp.sign(ref_blk_mask))
-    #ref_blk_neighbor = jnp.column_stack([up_vals, down_vals, left_vals, right_vals])
+    ref_glob_blk_index = jnp.column_stack([blk_info['glob_index'][blks], rows, cols])
+    ref_blk_index = jnp.column_stack([blks, rows, cols])
+    ref_blk_number = jnp.sum(jnp.sign(ref_blk_mask))
+    ref_blk_neighbor = jnp.column_stack([up_vals, down_vals, left_vals, right_vals])
 
-    #row_indices = jnp.arange(ref_blk_neighbor.shape[0])
+    row_indices = jnp.arange(ref_blk_neighbor.shape[0])
     mask_nonzero = row_indices < ref_blk_number
     mask_nonzero = mask_nonzero[:, jnp.newaxis]
 
