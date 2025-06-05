@@ -138,7 +138,7 @@ def get_refinement_block_info(blk_info, ref_blk_mask, max_blk_num):
     ref_blk_number = jnp.sum(jnp.sign(ref_blk_mask))
     ref_blk_neighbor = jnp.column_stack([up_vals, down_vals, left_vals, right_vals])
 
-    row_indices = jnp.arange(ref_blk_neighbor.shape[0])
+    #row_indices = jnp.arange(ref_blk_neighbor.shape[0])
     mask_nonzero = row_indices < ref_blk_number
     mask_nonzero = mask_nonzero[:, jnp.newaxis]
 
