@@ -426,7 +426,7 @@ blk_info_pmap_axis = {'number': 0,
 @partial(pmap,static_broadcasted_argnums=0,in_axes=(None,0,blk_info_pmap_axis, None,None,None))
 def parallel_initialize(level, blk_data, blk_info, criterion, dx, dy):
     device_idx = jax.lax.axis_index('x')
-    
+    print(blk_data.shape)
     ref_grid_mask = get_refinement_grid_mask(level, blk_data, blk_info, criterion, dx, dy)
 
     ref_blk_mask = get_refinement_block_mask(level, ref_grid_mask)
