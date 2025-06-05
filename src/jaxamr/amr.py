@@ -1,6 +1,6 @@
 # Copyright © 2025 Haocheng Wen, Faxuan Luo
 # SPDX-License-Identifier: MIT
-
+import jax
 import jax.numpy as jnp
 from jax import jit, vmap, pmap
 from jax.scipy.signal import convolve2d
@@ -426,7 +426,7 @@ blk_info_pmap_axis = {'number': 0,
 @partial(pmap,static_broadcasted_argnums=(0,3),in_axes=(None,0,blk_info_pmap_axis, None,None,None))
 def parallel_initialize(level, blk_data, blk_info, criterion, dx, dy):
     device_idx = jax.lax.axis_index('x')
-    print(blk_data.shape)
+    
     ref_grid_mask = get_refinement_grid_mask(level, blk_data, blk_info, criterion, dx, dy)
 
     ref_blk_mask = get_refinement_block_mask(level, ref_grid_mask)
