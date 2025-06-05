@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import jax.numpy as jnp
-from jax import jit, vmap
+from jax import jit, vmap, pmap
 from jax.scipy.signal import convolve2d
 from functools import partial
 
@@ -13,9 +13,10 @@ n_grid=None
 refinement_tolerance=None
 template_node_num=None
 grid_mask_buffer_kernel=None
+parallel = 'off'
 
 def set_amr(amr_config):
-    global Lx, Ly, n_block, n_grid, refinement_tolerance, template_node_num, grid_mask_buffer_kernel
+    global Lx, Ly, n_block, n_grid, refinement_tolerance, template_node_num, grid_mask_buffer_kernel,parallel
     n_block = amr_config['n_block']
     refinement_tolerance = amr_config['refinement_tolerance']
     template_node_num = amr_config['template_node_num']
@@ -43,6 +44,8 @@ def set_amr(amr_config):
         .at[:, buffer_num].set(1)
         .at[buffer_num, buffer_num].set(0)
     )
+    if 'parallel' in amr_config:
+        parallel = amr_config['parallel']
 
 
 
@@ -183,7 +186,7 @@ def interpolate_coarse_to_fine(ref_blk_data):
 
 
 @partial(jit, static_argnames=('level'))
-def interpolate_fine_to_coarse(level, blk_data, ref_blk_data, ref_blk_info):
+def interpolate_fine_to_coarse_normal(level, blk_data, ref_blk_data, ref_blk_info):
 
     updated_blk_data = blk_data
 
@@ -344,8 +347,7 @@ def update_external_boundary(level, blk_data, ref_blk_data, ref_blk_info):
     return ref_blk_data
 
 
-
-def initialize(level, blk_data, blk_info, criterion, dx, dy):
+def initialize_normal(level, blk_data, blk_info, criterion, dx, dy):
 
     ref_grid_mask = get_refinement_grid_mask(level, blk_data, blk_info, criterion, dx, dy)
 
@@ -362,8 +364,7 @@ def initialize(level, blk_data, blk_info, criterion, dx, dy):
     return ref_blk_data, ref_blk_info, max_blk_num
 
 
-
-def update(level, blk_data, blk_info, criterion, dx, dy, prev_ref_blk_data, prev_ref_blk_info, max_blk_num):
+def update_normal(level, blk_data, blk_info, criterion, dx, dy, prev_ref_blk_data, prev_ref_blk_info, max_blk_num):
 
     ref_grid_mask = get_refinement_grid_mask(level, blk_data, blk_info, criterion, dx, dy)
 
@@ -413,3 +414,94 @@ def update_max_block_number(ref_blk_mask, max_blk_num):
         updated_max_blk_num = max_blk_num
 
     return updated_mask, updated_max_blk_num
+
+
+##parallel_settings
+blk_info_pmap_axis = {'number': 0,
+                      'index': 0,
+                      'glob_index': 0,
+                      'neighbor_index': 0}
+
+@partial(pmap,static_broadcasted_argnums=0,in_axes=(None,0,blk_info_pmap_axis, None,None,None)
+def parallel_initialize(level, blk_data, blk_info, criterion, dx, dy):
+    device_idx = jax.lax.axis_index('x')
+    
+    ref_grid_mask = get_refinement_grid_mask(level, blk_data, blk_info, criterion, dx, dy)
+
+    ref_blk_mask = get_refinement_block_mask(level, ref_grid_mask)
+
+    max_blk_num = initialize_max_block_number(level, ref_blk_mask)
+
+    ref_blk_info = get_refinement_block_info(blk_info, ref_blk_mask, max_blk_num)
+
+    ref_blk_data = get_refinement_block_data(level, blk_data, ref_blk_info)
+
+    print(f'\nDevice [{device_idx}]: AMR Initialized at Level [{level}] with [{max_blk_num}] blocks')
+
+    return ref_blk_data, ref_blk_info, max_blk_num
+
+@partial(pmap,static_broadcasted_argnums=0,in_axes=(None,0, blk_info_pmap_axis, None, None, None,0,blk_info_pmap_axis,0)
+def parallel_update(level, blk_data, blk_info, criterion, dx, dy, prev_ref_blk_data, prev_ref_blk_info, max_blk_num):
+    device_idx = jax.lax.axis_index('x')
+    
+    ref_grid_mask = get_refinement_grid_mask(level, blk_data, blk_info, criterion, dx, dy)
+
+    ref_blk_mask = get_refinement_block_mask(level, ref_grid_mask)
+
+    updated_mask, updated_max_blk_num = update_max_block_number(ref_blk_mask, max_blk_num)
+    if updated_mask:
+        max_blk_num = updated_max_blk_num
+        print('\nAMR max_blk_num Updated as[',max_blk_num,'] at Level [',level,']')
+
+    ref_blk_info = get_refinement_block_info(blk_info, ref_blk_mask, max_blk_num)
+
+    ref_blk_data = get_refinement_block_data(level, blk_data, ref_blk_info)
+
+    rows_A, rows_B, unaltered_num = find_unaltered_block_index(ref_blk_info, prev_ref_blk_info)
+    ref_blk_data = ref_blk_data.at[rows_B[0:unaltered_num]].set(prev_ref_blk_data[rows_A[0:unaltered_num]])
+
+    valid_blk_num = ref_blk_info['number']
+    print(f'\nDevice [{device_idx}]:AMR Updated at Level [{level}] with [{valid_blk_num}/{max_blk_num}] blocks [valid/max]')
+
+    return ref_blk_data, ref_blk_info, max_blk_num
+
+@partial(pmap,static_broadcasted_argnums=0,in_axes=(None, 0, 0, blk_info_pmap_axis)
+@partial(jit, static_argnames=('level'))
+def parallel_interpolate_fine_to_coarse(level, blk_data, ref_blk_data, ref_blk_info):
+
+    updated_blk_data = blk_data
+
+    ref_blk_data = ref_blk_data.reshape(ref_blk_data.shape[0], ref_blk_data.shape[1],
+                        ref_blk_data.shape[2]//2, 2,
+                        ref_blk_data.shape[3]//2, 2).mean(axis=(3, 5))
+
+
+    updated_blk_data = updated_blk_data.reshape(updated_blk_data.shape[0], updated_blk_data.shape[1],
+                    n_block[level][0], n_grid[level][0],
+                    n_block[level][1], n_grid[level][1]).transpose(0, 1, 2, 4, 3, 5)
+
+    blks = ref_blk_info['index'][:, 0]
+    rows = ref_blk_info['index'][:, 1]
+    cols = ref_blk_info['index'][:, 2]
+    updated_blk_data = updated_blk_data.at[blks, :, rows, cols, :, :].set(ref_blk_data)
+
+    updated_blk_data = (
+                updated_blk_data.at[:, :, -1, -1, :, :]
+                .set(blk_data[:, :, -n_grid[level][0]:, -n_grid[level][1]:])
+                .transpose(0, 1, 2, 4, 3, 5)
+                .reshape(updated_blk_data.shape[0], updated_blk_data.shape[1],
+                    n_block[level][0] * n_grid[level][0],
+                    n_block[level][1] * n_grid[level][1])
+    )
+
+    return updated_blk_data
+
+initialize_dict = {'on':parallel_initialize,
+                   'off':initialize_normal}
+update_dict = {'on':parallel_update,
+                   'off':update_normal}
+interpolate_fine_to_coarse = {'on':parallel_interpolate_fine_to_coarse,
+                              'off':interpolate_fine_to_coarse_normal}
+initialize = initialize_dict[parallel]
+update = update_dict[parallel]
+interpolate_fine_to_coarse = interpolate_fine_to_coarse_dict[parallel]
