@@ -503,6 +503,11 @@ update_dict = {'on':parallel_update,
                    'off':update_normal}
 interpolate_fine_to_coarse_dict = {'on':parallel_interpolate_fine_to_coarse,
                               'off':interpolate_fine_to_coarse_normal}
-initialize = initialize_dict[parallel]
-update = update_dict[parallel]
-interpolate_fine_to_coarse = interpolate_fine_to_coarse_dict[parallel]
+def initialize(level, blk_data, blk_info, criterion, dx, dy):
+    return initialize_dict[parallel](level, blk_data, blk_info, criterion, dx, dy)
+
+def update(level, blk_data, blk_info, criterion, dx, dy, prev_ref_blk_data, prev_ref_blk_info, max_blk_num):
+    return update_dict[parallel](level, blk_data, blk_info, criterion, dx, dy, prev_ref_blk_data, prev_ref_blk_info, max_blk_num)
+
+def interpolate_fine_to_coarse(level, blk_data, ref_blk_data, ref_blk_info):
+    return interpolate_fine_to_coarse_dict[parallel](level, blk_data, blk_info, criterion, dx, dy, prev_ref_blk_data, prev_ref_blk_info, max_blk_num)
