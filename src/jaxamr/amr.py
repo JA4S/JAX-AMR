@@ -423,7 +423,7 @@ blk_info_pmap_axis = {'number': 0,
                       'neighbor_index': 0
                      }
 
-@partial(pmap,static_broadcasted_argnums=0,in_axes=(None,0,blk_info_pmap_axis, None,None,None))
+@partial(pmap,static_broadcasted_argnums=(0,3),in_axes=(None,0,blk_info_pmap_axis, None,None,None))
 def parallel_initialize(level, blk_data, blk_info, criterion, dx, dy):
     device_idx = jax.lax.axis_index('x')
     print(blk_data.shape)
@@ -441,7 +441,7 @@ def parallel_initialize(level, blk_data, blk_info, criterion, dx, dy):
 
     return ref_blk_data, ref_blk_info, max_blk_num
 
-@partial(pmap,static_broadcasted_argnums=0,in_axes=(None,0, blk_info_pmap_axis, None, None, None,0,blk_info_pmap_axis,0))
+@partial(pmap,static_broadcasted_argnums=(0,3),in_axes=(None, 0, blk_info_pmap_axis, None, None, None,0,blk_info_pmap_axis,0))
 def parallel_update(level, blk_data, blk_info, criterion, dx, dy, prev_ref_blk_data, prev_ref_blk_info, max_blk_num):
     device_idx = jax.lax.axis_index('x')
     
