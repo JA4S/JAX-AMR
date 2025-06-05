@@ -501,7 +501,7 @@ initialize_dict = {'on':parallel_initialize,
                    'off':initialize_normal}
 update_dict = {'on':parallel_update,
                    'off':update_normal}
-interpolate_fine_to_coarse = {'on':parallel_interpolate_fine_to_coarse,
+interpolate_fine_to_coarse_dict = {'on':parallel_interpolate_fine_to_coarse,
                               'off':interpolate_fine_to_coarse_normal}
 initialize = initialize_dict[parallel]
 update = update_dict[parallel]
