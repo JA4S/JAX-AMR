@@ -133,10 +133,10 @@ def get_refinement_block_info(blk_info, ref_blk_mask, max_blk_num):
     left_vals = left[blks, rows, cols] - 1
     right_vals = right[blks, rows, cols] - 1
 
-    ref_glob_blk_index = jnp.column_stack([blk_info['glob_index'][blks], rows, cols])
-    ref_blk_index = jnp.column_stack([blks, rows, cols])
-    ref_blk_number = jnp.sum(jnp.sign(ref_blk_mask))
-    ref_blk_neighbor = jnp.column_stack([up_vals, down_vals, left_vals, right_vals])
+    #ref_glob_blk_index = jnp.column_stack([blk_info['glob_index'][blks], rows, cols])
+    #ref_blk_index = jnp.column_stack([blks, rows, cols])
+    #ref_blk_number = jnp.sum(jnp.sign(ref_blk_mask))
+    #ref_blk_neighbor = jnp.column_stack([up_vals, down_vals, left_vals, right_vals])
 
     #row_indices = jnp.arange(ref_blk_neighbor.shape[0])
     mask_nonzero = row_indices < ref_blk_number
