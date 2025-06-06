@@ -588,7 +588,7 @@ def update_parallel(level, blk_data, blk_info, criterion, dx, dy, prev_ref_blk_d
         for device_idx in range(num_devices):
             print(f'\nDevice [{device_idx}]:AMR max_blk_num Updated as[',max_blk_num[device_idx],'] at Level [',level,']')
 
-    ref_blk_info, ref_blk_data, valid_blk_num = get_refinement_block_pmap(level, blk_data, blk_info, ref_blk_mask, max_blk_num, prev_ref_blk_data, prev_ref_blk_info):
+    ref_blk_info, ref_blk_data, valid_blk_num = get_refinement_block_pmap(level, blk_data, blk_info, ref_blk_mask, max_blk_num, prev_ref_blk_data, prev_ref_blk_info)
   
     for device_idx in range(num_devices):
         print(f'\nDevice [{device_idx}]:AMR Updated at Level [{level}] with [{valid_blk_num[device_idx]}/{max_blk_num[device_idx]}] blocks [valid/max]')
