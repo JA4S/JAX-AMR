@@ -31,6 +31,10 @@ def set_amr(amr_config):
     Ny = amr_config['base_grid']['Ny']
     Lx = amr_config['base_grid']['Lx']
     Ly = amr_config['base_grid']['Ly']
+    if 'parallel' in amr_config:
+        parallel = amr_config['parallel']
+        if parallel == 'off':
+            num_devices = 1
     n_grid = [[(Nx // num_devices) // n_block[0][0], Ny // n_block[0][1]]]
     dx = [Lx/Nx]
     dy = [Ly/Ny]
@@ -50,8 +54,7 @@ def set_amr(amr_config):
         .at[:, buffer_num].set(1)
         .at[buffer_num, buffer_num].set(0)
     )
-    if 'parallel' in amr_config:
-        parallel = amr_config['parallel']
+    
 
 
 
