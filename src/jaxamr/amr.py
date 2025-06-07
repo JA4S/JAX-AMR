@@ -35,6 +35,8 @@ def set_amr(amr_config):
         parallel = amr_config['parallel']
         if parallel == 'off':
             num_devices = 1
+        else:
+            num_devices = len(jax.devices())
     n_grid = [[(Nx // num_devices) // n_block[0][0], Ny // n_block[0][1]]]
     dx = [Lx/Nx]
     dy = [Ly/Ny]
