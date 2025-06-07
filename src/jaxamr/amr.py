@@ -405,9 +405,9 @@ def initialize_max_block_number(level, ref_blk_mask):
 
     ref_blk_num = jnp.sum(jnp.sign(ref_blk_mask))
 
-    max_blk_num = ((ref_blk_num + 10 * 2**(level-1) )//10 * 10)
+    max_blk_num = int((ref_blk_num + 10 * 2**(level-1) )//10 * 10)
 
-    return max_blk_num.astype(int)
+    return max_blk_num
 
 initialize_max_block_number_parallel = pmap(initialize_max_block_number,axis_name='x',static_broadcasted_argnums=0,in_axes=(None,0))
 
@@ -418,15 +418,15 @@ def update_max_block_number(ref_blk_mask, max_blk_num):
 
     if (ref_blk_num + 1) > max_blk_num:
         updated_mask = True
-        updated_max_blk_num = (max_blk_num * 2.0)
+        updated_max_blk_num = int(max_blk_num * 2.0)
     elif (ref_blk_num + 1) < (max_blk_num/2.5):
         updated_mask = True
-        updated_max_blk_num = (max_blk_num / 2.0)
+        updated_max_blk_num = int(max_blk_num / 2.0)
     else:
         updated_mask = False
         updated_max_blk_num = max_blk_num
 
-    return updated_mask, updated_max_blk_num.astype(int)
+    return updated_mask, updated_max_blk_num
 
 update_max_block_number_parallel = pmap(update_max_block_number,axis_name='x',in_axes=(0,0))
 
