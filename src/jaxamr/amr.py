@@ -37,6 +37,8 @@ def set_amr(amr_config):
             num_devices = 1
         else:
             num_devices = len(jax.devices())
+    else:
+        num_devices = 1
     n_grid = [[(Nx // num_devices) // n_block[0][0], Ny // n_block[0][1]]]
     dx = [Lx/Nx]
     dy = [Ly/Ny]
