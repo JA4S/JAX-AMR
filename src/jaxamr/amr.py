@@ -406,6 +406,9 @@ def initialize_max_block_number(level, ref_blk_mask):
 
     max_blk_num = int((ref_blk_num + 10 * 2**(level-1) )//10 * 10)
 
+    remainder = max_blk_num % num_devices
+
+    max_blk_num = max_blk_num + (remainder!=0)*(num_devices-remainder)
     return max_blk_num
 
 initialize_max_block_number_parallel = pmap(initialize_max_block_number,axis_name='x',static_broadcasted_argnums=0,in_axes=(None,0))
@@ -424,6 +427,10 @@ def update_max_block_number(ref_blk_mask, max_blk_num):
     else:
         updated_mask = False
         updated_max_blk_num = max_blk_num
+
+    remainder = updated_max_blk_num % num_devices
+
+    updated_max_blk_num = updated_max_blk_num + (remainder!=0)*(num_devices-remainder)
 
     return updated_mask, updated_max_blk_num
 
