@@ -22,7 +22,7 @@ blk_info_pmap_axis = {'number': 0,
                      }
 
 def set_amr(amr_config):
-    global Lx, Ly, n_block, n_grid, refinement_tolerance, template_node_num, grid_mask_buffer_kernel,parallel
+    global Lx, Ly, n_block, n_grid, refinement_tolerance, template_node_num, grid_mask_buffer_kernel,parallel,num_devices
     n_block = amr_config['n_block']
     refinement_tolerance = amr_config['refinement_tolerance']
     template_node_num = amr_config['template_node_num']
