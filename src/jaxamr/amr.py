@@ -201,14 +201,14 @@ def interpolate_fine_to_coarse(level, blk_data, ref_blk_data, ref_blk_info):
     cols = ref_blk_info['index'][:, 2]
     updated_blk_data = updated_blk_data.at[blks, :, rows, cols, :, :].set(ref_blk_data)
 
-    updated_blk_data = (
-                updated_blk_data.at[:, :, -1, -1, :, :]
-                .set(blk_data[:, :, -n_grid[level][0]:, -n_grid[level][1]:])
-                .transpose(0, 1, 2, 4, 3, 5)
-                .reshape(updated_blk_data.shape[0], updated_blk_data.shape[1],
-                    n_block[level][0] * n_grid[level][0],
-                    n_block[level][1] * n_grid[level][1])
-    )
+    #updated_blk_data = (
+                #updated_blk_data.at[:, :, -1, -1, :, :]
+                #.set(blk_data[:, :, -n_grid[level][0]:, -n_grid[level][1]:])
+                #.transpose(0, 1, 2, 4, 3, 5)
+                #.reshape(updated_blk_data.shape[0], updated_blk_data.shape[1],
+                    #n_block[level][0] * n_grid[level][0],
+                    #n_block[level][1] * n_grid[level][1])
+    #)
 
     return updated_blk_data
 
