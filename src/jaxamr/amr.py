@@ -209,6 +209,9 @@ def interpolate_fine_to_coarse(level, blk_data, ref_blk_data, ref_blk_info):
                     #n_block[level][0] * n_grid[level][0],
                     #n_block[level][1] * n_grid[level][1])
     #)
+    updated_blk_data = updated_blk_data.reshape(updated_blk_data.shape[0], updated_blk_data.shape[1],
+                                               n_block[level][0] * n_grid[level][0],
+                                               n_block[level][1] * n_grid[level][1])
 
     return updated_blk_data
 
