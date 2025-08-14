@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon as MplPolygon, Rectangle
 from matplotlib.path import Path
 
+# Resolution for EB calculation
+EPS = 1e-12
 
 def initialize_levelset_boundary(vertices):
     '''
