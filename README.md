@@ -24,6 +24,7 @@ pip install git+https://github.com/JA4S/JAX-AMR.git
 ```
 
 ## Example
+
 An example for the conjunction of a simple CFD solver with JAX-AMR are provided [here](https://github.com/JA4S/JAX-AMR/tree/main/examples).
 
 Open [jax_amr_basic_example.ipynb](https://github.com/JA4S/JAX-AMR/blob/main/examples/jax_amr_basic_example.ipynb) in Google Colab to run the example.
@@ -34,12 +35,20 @@ The density result and refinement level for the example are shown as follows.
 
 <img src="/examples/refinement_level.png" alt="refinement level" height="400"/>
 
+An example for the conjunction of a simple CFD solver with EB (Embedded Boundary) are provided [here](https://github.com/JA4S/JAX-AMR/tree/main/examples).
+
+Open [jax_eb_basic_example.ipynb](https://github.com/JA4S/JAX-AMR/blob/main/examples/jax_eb_basic_example.ipynb) in Google Colab to run the example.
+
+The density result for the example is shown as follows.
+
+<img src="/examples/result_eb.png" alt="result" height="400"/>
+
 ## State of the Project
 
 - [x] 2D AMR, fully jit-compiled ✅
 - [x] conjuction with the CFD solver ✅
+- [x] Embedded boudary method (not yet combined with AMR)✅
 - [ ] 3D AMR (soon)
-- [ ] Immerse boudary method (soon)
 - [ ] parallel mannagment (soon)
 
 ## Citation
