@@ -208,7 +208,7 @@ def CFL(U, dx, dy, cfl, cell_info, gamma=1.4):
 @jit
 def rk2(U, dx, dy, cfl, cell_info):
 
-    dt = CFL(U, cfl, cell_info)
+    dt = CFL(U, dx, dy, cfl, cell_info)
     U1 = U + 0.5 * dt * rhs(U, dx, dy, cell_info)
     U2 = U + dt * rhs(U1, dx, dy, cell_info)
 
