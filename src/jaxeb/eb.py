@@ -457,7 +457,7 @@ def visualize_cut_cell(vertices, x_min, y_min, nx, ny, dx, dy, cut_cell_indices,
             print(f"fluid centroid: ({cell_info['fluid_centroid'][0, i, j]:.4f}, {cell_info['fluid_centroid'][1, i, j]:.4f})")
             print(f"cut face normal: ({cell_info['cut_face_normal'][0, i, j]:.4f}, {cell_info['cut_face_normal'][1, i, j]:.4f})")
             print(f"fluid area: {cell_info['fluid_area'][i, j]:.4f}")
-            print(f"切割边长度分数: {cell_info['fluid_edge_length_fraction'][:, i, j]}")
+            print(f"cut edge length fraction: {cell_info['fluid_edge_length_fraction'][:, i, j]}")
             print(f"neighbor type: {cell_info['neighbor_type'][:, i, j]}")
 
 
