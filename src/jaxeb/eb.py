@@ -1,3 +1,6 @@
+# Copyright © 2025 Haocheng Wen
+# SPDX-License-Identifier: MIT
+
 import jax
 import jax.numpy as jnp
 from jax import vmap, jit
