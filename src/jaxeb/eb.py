@@ -463,7 +463,7 @@ def visualize_cut_cell(vertices, x_min, y_min, nx, ny, dx, dy, cut_cell_indices,
 
     print("\n Visualization results are being produced...")
 
-    fig, ax = plt.subplots(figsize=(64, 64))
+    fig, ax = plt.subplots(figsize=(32, 32))
     ax.set_aspect('equal', adjustable='box')
     ax.set_xlim(x_min, x_min + nx*dx)
     ax.set_ylim(y_min, y_min + ny*dy)
@@ -557,7 +557,7 @@ def visualize_cut_cell(vertices, x_min, y_min, nx, ny, dx, dy, cut_cell_indices,
     plt.show()
 
 
-def initialize_eb(vertices, x_min, y_min, nx, ny, dx, dy, visual=False):
+def initialize(vertices, x_min, y_min, nx, ny, dx, dy, visual=False):
 
     # First, generate the computational grid
     xc = jnp.linspace(x_min + dx/2, x_min + nx*dx - dx/2, nx)
