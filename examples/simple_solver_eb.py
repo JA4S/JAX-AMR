@@ -192,7 +192,7 @@ def initialize(x_min, y_min, Lx, Ly, nx, ny, cell_type, gamma=1.4):
     return X, Y, U
 
 
-def CFL(U, cfl, cell_info, gamma=1.4):
+def CFL(U, dx, dy, cfl, cell_info, gamma=1.4):
 
     rho = U[0:1,:,:]
     u = U[1:2,:,:]/rho
