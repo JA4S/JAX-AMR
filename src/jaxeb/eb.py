@@ -178,7 +178,7 @@ def get_cell_indices(polygon, edges, is_ccw, phi_corners):
 
 
 
-def get_all_cell_info(cell_info, solid_indices, cut_cell_indices, polygon, edges, is_ccw, cell_corners, phi_corners):
+def get_all_cell_info(dx, dy, cell_info, solid_indices, cut_cell_indices, polygon, edges, is_ccw, cell_corners, phi_corners):
 
     # 处理固体单元
     i, j = solid_indices
@@ -196,7 +196,7 @@ def get_all_cell_info(cell_info, solid_indices, cut_cell_indices, polygon, edges
     num_cut_cell = len(cut_cell_indices[0])
     for k in range(num_cut_cell):
         i,  j = cut_cell_indices[0][k], cut_cell_indices[1][k]
-        cell_info = process_cut_cell(i, j, cell_info, edges, is_ccw, cell_corners[:, i, j], phi_corners[:, i, j])
+        cell_info = process_cut_cell(i, j, dx, dy, cell_info, edges, is_ccw, cell_corners[:, i, j], phi_corners[:, i, j])
 
     return cell_info
 
@@ -238,7 +238,7 @@ def polygon_area_centroid(points):
 
 
 
-def process_cut_cell(i, j, cell_info, edges, is_ccw, corners, phi_values): # 还应增加dx, dy
+def process_cut_cell(i, j, dx, dy, cell_info, edges, is_ccw, corners, phi_values): # 还应增加dx, dy
     """
     处理切割单元信息
     """
@@ -585,7 +585,7 @@ def initialize_eb(vertices, x_min, y_min, nx, ny, dx, dy, visual=False):
 
     solid_indices, cut_cell_indices = get_cell_indices(polygon, edges, is_ccw, phi_corners)
 
-    cell_info = get_all_cell_info(cell_info, solid_indices, cut_cell_indices, polygon, edges, is_ccw, cell_corners, phi_corners)
+    cell_info = get_all_cell_info(dx, dy, cell_info, solid_indices, cut_cell_indices, polygon, edges, is_ccw, cell_corners, phi_corners)
 
     print(f"\n EB initialzed. {len(cut_cell_indices[0])} cut cells are found.")
 
