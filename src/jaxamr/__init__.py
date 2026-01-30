@@ -16,3 +16,5 @@ Created on Sun Apr 20 13:34:22 2025
 #from .nondim import *
 #from .solver import *
 #from .thermo import *
+from .amr import *
+from .amraux import *

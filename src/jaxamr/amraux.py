@@ -1,8 +1,11 @@
 # Copyright © 2025 Haocheng Wen, Faxuan Luo
 # SPDX-License-Identifier: MIT
 
+from tkinter import N
 import jax.numpy as jnp
+from matplotlib.colors import BoundaryNorm
 import jaxamr.amr as amr
+import numpy as np
 
 
 def plot_block_data(blk_data_component, blk_info, fig_handle, vrange):
@@ -31,8 +34,8 @@ def plot_block_data(blk_data_component, blk_info, fig_handle, vrange):
             nx = amr.n_grid[level][0] * 2
             ny = amr.n_grid[level][1] * 2
 
-        x_edges = jnp.linspace(x_min, x_max, nx)
-        y_edges = jnp.linspace(y_min, y_max, ny)
+        x_edges = jnp.linspace(x_min, x_max, nx+1)
+        y_edges = jnp.linspace(y_min, y_max, ny+1)
 
         X, Y = jnp.meshgrid(x_edges, y_edges)
 

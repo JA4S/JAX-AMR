@@ -1,0 +1,14 @@
+LICENSE
+README.md
+setup.py
+src/jaxamr/__init__.py
+src/jaxamr/amr.py
+src/jaxamr/amraux.py
+src/jaxamr/common.py
+src/jaxamr/simple_solver.py
+src/jaxamr.egg-info/PKG-INFO
+src/jaxamr.egg-info/SOURCES.txt
+src/jaxamr.egg-info/dependency_links.txt
+src/jaxamr.egg-info/top_level.txt
+src/jaxeb/__init__.py
+src/jaxeb/eb.py
