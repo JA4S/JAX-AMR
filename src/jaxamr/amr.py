@@ -601,6 +601,39 @@ def get_ghost_block_data(blk_data, blk_info):
     ghost_blk_data = jnp.concatenate([pad_upper, padded_horizontal, pad_lower], axis=2)
 
     return ghost_blk_data
+
+@partial(jit, static_argnames=('level'))
+def update_external_boundary(level, blk_data, ref_blk_data, ref_blk_info):
+    num = template_node_num
+
+    raw_blk_data = get_refinement_block_data(level, blk_data, ref_blk_info)
+
+    neighbor = jnp.sign(ref_blk_info['neighbor_index'] + 1)[:, :, None, None, None]
+    boundary_mask = jnp.ones_like(neighbor) - neighbor
+
+    ref_blk_data = jnp.nan_to_num(ref_blk_data)
+
+    value = ref_blk_data[..., :num, :] * neighbor[:,0] \
+        + raw_blk_data[..., :num, :] * boundary_mask[:,0]
+    ref_blk_data = ref_blk_data.at[..., :num, :].set(value)
+
+    value = ref_blk_data[..., -num:, :] * neighbor[:,1] \
+        + raw_blk_data[..., -num:, :] * boundary_mask[:,1]
+    ref_blk_data = ref_blk_data.at[..., -num:, :].set(value)
+
+    value = ref_blk_data[..., :, :num] * neighbor[:,2] \
+        + raw_blk_data[..., :, :num] * boundary_mask[:,2]
+    ref_blk_data = ref_blk_data.at[..., :, :num].set(value)
+
+    value = ref_blk_data[..., :, -num:] * neighbor[:,3] \
+        + raw_blk_data[..., :, -num:] * boundary_mask[:,3]
+    ref_blk_data = ref_blk_data.at[..., :, -num:].set(value)
+
+    ref_blk_data = ref_blk_data.at[-1].set(jnp.nan)
+
+    return ref_blk_data
+
+
 @jit
 def pad_inact_blk(blk_data, blk_info):
     index = blk_info['index']
