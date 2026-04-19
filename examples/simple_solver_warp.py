@@ -7,10 +7,7 @@ import warp as wp
 
 from jaxamr import amr
 
-
 cfd_float = wp.float32
-np_cfd_float = np.float32 if cfd_float == wp.float32 else np.float64
-
 
 @wp.func
 def flux(rho: cfd_float, rhou: cfd_float, rhov: cfd_float, E: cfd_float, gamma: cfd_float) -> tuple[wp.vec4, wp.vec4]:
