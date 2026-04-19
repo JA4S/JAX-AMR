@@ -5,8 +5,9 @@ JAX-AMR is an adaptive mesh refinement framework based on dynamically updated mu
 Authors:
 - [Haocheng Wen](https://github.com/thuwen)
 - [Faxuan Luo](https://github.com/luofx23)
+- [Hanbing Zou](https://github.com/Kantyc)
 
-Correspondence via [mail](mailto:haochengwenson@126.com) (Haocheng Wen).
+Correspondence via [mail](mailto:wen@tsinghua.edu.cn) (Haocheng Wen).
 
 ## Implementation Strategy
 The multi-layer blocks and the partitioning and refinement strategies in JAX-AMR are illustrated as follows.
@@ -25,7 +26,8 @@ pip install git+https://github.com/JA4S/JAX-AMR.git
 
 ## Example
 
-An example for the conjunction of a simple CFD solver with JAX-AMR are provided [here](https://github.com/JA4S/JAX-AMR/tree/main/examples).
+### Simple solver with JAX-AMR
+An example for the conjunction of a simple CFD solver with JAX-AMR is provided [here](https://github.com/JA4S/JAX-AMR/tree/main/examples).
 
 Open [jax_amr_basic_example.ipynb](https://github.com/JA4S/JAX-AMR/blob/main/examples/jax_amr_basic_example.ipynb) in Google Colab to run the example.
 
@@ -35,7 +37,8 @@ The density result and refinement level for the example are shown as follows.
 
 <img src="/examples/refinement_level.png" alt="refinement level" height="400"/>
 
-An example for the conjunction of a simple CFD solver with EB (Embedded Boundary) are provided [here](https://github.com/JA4S/JAX-AMR/tree/main/examples).
+### Simple solver with Embedded Boundary (EB)
+An example for the conjunction of a simple CFD solver with EB is provided [here](https://github.com/JA4S/JAX-AMR/tree/main/examples).
 
 Open [jax_eb_basic_example.ipynb](https://github.com/JA4S/JAX-AMR/blob/main/examples/jax_eb_basic_example.ipynb) in Google Colab to run the example.
 
@@ -43,13 +46,25 @@ The density result for the example is shown as follows.
 
 <img src="/examples/result_eb.png" alt="result" height="400"/>
 
+### Warp-based simple solver with JAX-AMR
+An example for the conjunction of a Warp-based CFD solver with JAX-AMR is provided [here](https://github.com/JA4S/JAX-AMR/tree/main/examples)
+
+Open [example_jax_amr_warp.ipynb](https://github.com/JA4S/JAX-AMR/blob/main/examples/example_jax_amr_warp.ipynb) in Google Colab to run the example.
+
+[Warp](https://github.com/NVIDIA/warp) is a Python framework for GPU-accelerated simulation released by NVIDIA. Compared with the JAX-based solver, the Warp-based solver can achieve significant speedup.
+This example shows how to integrate a Warp-based solver with JAX-AMR.
+
+When tested on a T4 GPU with a base-level mesh of 1600×1600 and refinement level set to 3, the Warp-version example runs **2× faster** than the JAX-version example. The primary test also shows
+that the speedup effect can be reduced as the base-level mesh size decreases.
+
 ## State of the Project
 
 - [x] 2D AMR, fully jit-compiled ✅
-- [x] conjuction with the CFD solver ✅
+- [x] conjuction with the JAX-based CFD solver ✅
+- [x] conjuction with the Warp-based CFD solver ✅
 - [x] Embedded boudary method (not yet combined with AMR)✅
-- [ ] 3D AMR (soon)
-- [ ] parallel mannagment (soon)
+- [ ] 3D AMR (ready for release)
+- [ ] parallel mannagment (ready for release)
 
 ## Citation
 JANC: A cost-effective, differentiable compressible reacting flow solver featured with JAX-based adaptive mesh refinement
