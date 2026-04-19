@@ -129,7 +129,7 @@ def vamp_rhs(U, dx, dy):
 
 
 def rk2(level, blk_data, dx, dy, dt, ref_blk_data, ref_blk_info):
-    num = template_node_num
+    num = 1 # template_node_num
 
     def step(U, dU, s):
         out = wp.zeros_like(U)
